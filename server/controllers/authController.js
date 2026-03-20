@@ -61,7 +61,7 @@ const register = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "User registered",
-            name: name.tirm(),
+            name: name.trim(),
             email: email.trim()
         });
     } catch (err) {
