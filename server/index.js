@@ -7,6 +7,7 @@ dotenv.config()
 import connectDB from './config/mongodb.js'
 
 import authRotes from './routes/authRoutes.js'
+
 const PORT = process.env.PORT || 5000;
 const host = process.env.HOST
 

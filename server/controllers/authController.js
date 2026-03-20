@@ -335,4 +335,34 @@ const resetPassword = async (req, res) => {
     }
 }
 
-export { register, login, logout, verifyOtp, verifyEamil, isAuthenticated, sendResetOtp, resetPassword }
+const getUserData = async (req, res) => {
+    try {
+        const userId = req.userId || req.body.userId
+
+        const user = await UserModel.findById(userId)
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User not found!"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            userData: {
+                name: user.name,
+                email:user.email,
+                isVerified: user.isVerified,
+            }
+        })
+
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+export { register, login, logout, verifyOtp, verifyEamil, isAuthenticated, sendResetOtp, resetPassword,getUserData }
