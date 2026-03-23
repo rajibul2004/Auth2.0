@@ -13,7 +13,22 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function () {
+            return this.provider === "local";
+        }
+    },
+    provider: {
+        type: String,
+        enum: ["local", "google", "facebook"],
+        default: "local",
+    },
+    googleId: {
+        type: String,
+        default: null,
+    },
+    profilePic: {
+        type: String,
+        default: "",
     },
     verifyOtp: {
         type: String,

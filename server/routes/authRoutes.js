@@ -1,5 +1,5 @@
 import express from 'express'
-import {register,login,logout,verifyOtp,verifyEamil,sendResetOtp,resetPassword,isAuthenticated, getUserData} from '../controllers/authController.js'
+import {register,login,logout,verifyOtp,verifyEamil,sendResetOtp,resetPassword,isAuthenticated, getUserData,googleAuth,facebookAuth} from '../controllers/authController.js'
 import userId from '../middleware/extractUserId.js';
 const router = express.Router();
 
@@ -12,5 +12,8 @@ router.post('/send-reset-otp',sendResetOtp)
 router.post('/reset-password',resetPassword)
 router.get('/is-auth',userId,isAuthenticated)
 router.get('/me',userId,getUserData)
+
+router.post('/google',googleAuth)
+router.post('/facebook',facebookAuth)
 
 export default router;

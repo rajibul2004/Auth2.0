@@ -351,8 +351,9 @@ const getUserData = async (req, res) => {
             success: true,
             userData: {
                 name: user.name,
-                email:user.email,
+                email: user.email,
                 isVerified: user.isVerified,
+                profilePic: user.profilePic,
             }
         })
 
@@ -365,4 +366,202 @@ const getUserData = async (req, res) => {
     }
 }
 
-export { register, login, logout, verifyOtp, verifyEamil, isAuthenticated, sendResetOtp, resetPassword,getUserData }
+const googleAuth = async (req, res) => {
+    try {
+        const { appToken } = req.body;
+        if (!appToken) {
+            return res.status(400).json({ error: "Token missing" });
+        }
+        const googleRes = await fetch(
+            `https://oauth2.googleapis.com/tokeninfo?id_token=${appToken}`
+        );
+
+        const googleUser = await googleRes.json();
+
+        if (googleUser.error_description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid Google token'
+            });
+        }
+        const user = await UserModel.findOne({ email: googleUser.email });
+        let isNew = false;
+        if (user && user.password === "google_auth") {
+            const token = jsonwebtoken.sign(
+                { id: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+        }
+        if(user &&user.password!=="google_auth"){
+            return res.status(401).json({
+                success:false,
+                message:"User already exist"
+            })
+        }
+        if (user === null) {
+            const newUser = new UserModel({
+                name: googleUser.name || 'Unnamed User',
+                email: googleUser.email,
+                password: 'google_auth',
+                provider: "google",
+                isVerified: googleUser.email_verified,
+                profilePic: googleUser.picture,
+            });
+            await newUser.save()
+            isNew = true;
+            const mailOption = {
+                from: process.env.SENDER_EMAIL,
+                to: googleUser.email,
+                subject: "Welcome to Auth",
+                text: `Welcome to auth. Your account has been created with email id: ${googleUser.email}`
+            }
+            try {
+                await transporter.sendMail(mailOption);
+            }
+            catch (mailErr) {
+                console.error("Email send error:", mailErr);
+                return res.status(500).json({
+                    success: false,
+                    message: "Registration successful, but failed to send email."
+                });
+            }
+            const token = jsonwebtoken.sign(
+                { id: newUser._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+        }
+        res.json({
+            success: true,
+            message: isNew
+                ? 'Google sign up successful'
+                : 'Google login successful',
+            user,
+        });
+    }
+    catch (err) {
+        res.json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+const facebookAuth = async (req, res) => {
+    try {
+        const { accessToken } = req.body;
+
+        if (!accessToken) {
+            return res.status(400).json({
+                success: false,
+                message: 'Access token missing',
+            });
+        }
+        const fbRes = await fetch(
+            `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`
+        );
+
+
+        const fbUser = await fbRes.json();
+
+        if (fbUser.error) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid Facebook token',
+            });
+        }
+
+        const user = await UserModel.findOne({ email: fbUser.email });
+        let isNew = false;
+        if (user && user.password === "facebook_oauth") {
+            const token = jsonwebtoken.sign(
+                { id: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+        }
+        if(user &&user.password!=="facebook_auth"){
+            return res.status(401).json({
+                success:false,
+                message:"User already exist"
+            })
+        }
+        if (user === null) {
+            const newUser = new UserModel({
+                name: fbUser.name || 'Unnamed User',
+                email: fbUser.email,
+                password: 'facebook_oauth',
+                provider: "facebook",
+                profilePic: fbUser.picture.data.url,
+                isVerified: true,
+            });
+            await newUser.save()
+            isNew = true;
+            const mailOption = {
+                from: process.env.SENDER_EMAIL,
+                to: fbUser.email,
+                subject: "Welcome to Auth",
+                text: `Welcome to auth. Your account has been created with email id: ${fbUser.email}`
+            }
+            try {
+                await transporter.sendMail(mailOption);
+            }
+            catch (mailErr) {
+                console.error("Email send error:", mailErr);
+                return res.status(500).json({
+                    success: false,
+                    message: "Registration successful, but failed to send email."
+                });
+            }
+            const token = jsonwebtoken.sign(
+                { id: newUser._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+        }
+        res.json({
+            success: true,
+            message: isNew
+                ? 'Google sign up successful'
+                : 'Google login successful',
+            user,
+        });
+    }
+    catch (err) {
+        res.json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+export { register, login, logout, verifyOtp, verifyEamil, isAuthenticated, sendResetOtp, resetPassword, getUserData, googleAuth, facebookAuth }

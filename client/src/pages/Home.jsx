@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { isLoggedin, userData, logout,backendUrl } = useContext(Context);
+  const { isLoggedin, userData, logout, backendUrl } = useContext(Context);
 
   const handleVerifyClick = async (e) => {
     e.preventDefault();
@@ -18,8 +18,9 @@ const Home = () => {
     toast.success("Verification OTP sent to email! 🎉");
     navigate("/email-verify");
   };
+  const newLocal = "absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-md opacity-0 group-hover/profile:opacity-50 transition-opacity duration-300";
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb animation-delay-2000"></div>
@@ -65,17 +66,17 @@ const Home = () => {
           {isLoggedin ? (
             <div className="relative group/profile">
               <div className="relative cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-md opacity-0 group-hover/profile:opacity-50 transition-opacity duration-300"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white flex items-center justify-center font-semibold text-xl shadow-lg transform transition-all duration-300 group-hover/profile:scale-110 group-hover/profile:shadow-xl border-2 border-white/50">
-                  {userData ? userData.name[0].toUpperCase() : "U"}
+                <div className={newLocal}></div>
+                <div className="relative w-12 h-12 object-contain bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white flex items-center justify-center font-semibold text-xl shadow-lg transform transition-all duration-300 group-hover/profile:scale-110 group-hover/profile:shadow-xl border-2 border-white/50">
+                  {userData?.profilePic !== "" ? (
+                    <img src={userData?.profilePic} alt="" className="rounded-full object-contain"/>
+                  ):userData.name[0].toUpperCase()}
                   <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
               </div>
 
-              {/* Dropdown menu */}
               <div className="absolute hidden group-hover/profile:block top-full right-0 z-50 pt-3 opacity-0 group-hover/profile:opacity-100 transition-all duration-300 transform origin-top-right scale-95 group-hover/profile:scale-100">
                 <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 overflow-hidden min-w-[240px]">
-                  {/* User info header */}
                   <div className="px-4 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-slate-700/50">
                     <p className="text-sm font-semibold text-white">
                       {userData?.name || "User"}
@@ -171,13 +172,13 @@ const Home = () => {
 
                     <li>
                       <button
-                        onClick={()=>{
-                          logout()
-                          navigate("/login",{
-                            state:{
-                              state:"Login"
-                            }
-                          })
+                        onClick={() => {
+                          logout();
+                          navigate("/login", {
+                            state: {
+                              state: "Login",
+                            },
+                          });
                         }}
                         className="w-full px-4 py-2.5 text-sm text-left text-red-400 hover:bg-gradient-to-r hover:from-red-600/20 hover:to-orange-600/20 hover:text-red-300 transition-all duration-200 flex items-center gap-3 group/item"
                       >
