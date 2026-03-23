@@ -1,0 +1,15 @@
+{
+  "name": "auth2.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install --prefix Server && npm install --include=dev --prefix Client && npm run build --prefix Client",
+    "start": "npm run start --prefix Server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
