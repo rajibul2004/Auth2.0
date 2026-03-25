@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState,useRef ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Context } from "../context/AppContext";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 const Home = () => {
   const navigate = useNavigate();
   const { isLoggedin, userData, logout, backendUrl } = useContext(Context);
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleVerifyClick = async (e) => {
     e.preventDefault();
@@ -18,7 +19,21 @@ const Home = () => {
     toast.success("Verification OTP sent to email! 🎉");
     navigate("/email-verify");
   };
-  const newLocal = "absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-md opacity-0 group-hover/profile:opacity-50 transition-opacity duration-300";
+
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const newLocal =
+    "absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-md opacity-0 group-hover/profile:opacity-50 transition-opacity duration-300";
+  console.log(showMenu);
   return (
     <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="absolute inset-0 overflow-hidden">
@@ -64,18 +79,30 @@ const Home = () => {
           </div>
 
           {isLoggedin ? (
-            <div className="relative group/profile">
-              <div className="relative cursor-pointer">
+            <div className="relative group/profile" ref={menuRef}>
+              <div
+                onClick={() => setShowMenu((prev) => !prev)}
+                className="relative cursor-pointer"
+              >
                 <div className={newLocal}></div>
                 <div className="relative w-12 h-12 object-contain bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white flex items-center justify-center font-semibold text-xl shadow-lg transform transition-all duration-300 group-hover/profile:scale-110 group-hover/profile:shadow-xl border-2 border-white/50">
                   {userData?.profilePic !== "" ? (
-                    <img src={userData?.profilePic} alt="" className="rounded-full object-contain"/>
-                  ):userData.name[0].toUpperCase()}
+                    <img
+                      src={userData?.profilePic}
+                      alt=""
+                      className="rounded-full object-contain"
+                    />
+                  ) : (
+                    userData.name[0].toUpperCase()
+                  )}
                   <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
               </div>
 
-              <div className="absolute hidden group-hover/profile:block top-full right-0 z-50 pt-3 opacity-0 group-hover/profile:opacity-100 transition-all duration-300 transform origin-top-right scale-95 group-hover/profile:scale-100">
+              <div
+                className={`absolute top-full right-0 z-50 pt-3 transition-all duration-300 transform origin-top-right
+    ${showMenu ? "block opacity-100 scale-100" : "hidden opacity-0 scale-95"}`}
+              >
                 <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 overflow-hidden min-w-[240px]">
                   <div className="px-4 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-slate-700/50">
                     <p className="text-sm font-semibold text-white">

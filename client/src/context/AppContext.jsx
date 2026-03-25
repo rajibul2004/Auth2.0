@@ -146,8 +146,6 @@ const AppContextProvider = (props) => {
             </div>
         )
     }
-    console.log(import.meta.env.VITE_BACKEND_URL)
-
     return (
         <Context.Provider value={value}>
             {props.children}
