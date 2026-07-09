@@ -1,15 +1,24 @@
-import { useContext, useState,useRef ,useEffect} from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Context } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import {
+  ArrowRight,
+  Hand,
+  MailCheck,
+  User,
+  Settings,
+  LogOut,
+} from "lucide-react";
+ 
 const Home = () => {
   const navigate = useNavigate();
   const { isLoggedin, userData, logout, backendUrl } = useContext(Context);
   const [showMenu, setShowMenu] = useState(false);
-
+  const menuRef = useRef(null);
+ 
   const handleVerifyClick = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
@@ -19,9 +28,7 @@ const Home = () => {
     toast.success("Verification OTP sent to email! 🎉");
     navigate("/email-verify");
   };
-
-  const menuRef = useRef(null);
-
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -31,382 +38,314 @@ const Home = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const newLocal =
-    "absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-md opacity-0 group-hover/profile:opacity-50 transition-opacity duration-300";
-  console.log(showMenu);
+ 
+  const firstName = userData?.name?.trim()?.split(/\s+/)?.[0] || "Developer";
+  const initial = userData?.name?.[0]?.toUpperCase() || "?";
+  const avatarGlow =
+    "absolute -inset-1 rounded-full bg-[#3D8BFF]/40 blur-md opacity-0 group-hover/profile:opacity-100 transition-opacity duration-300";
+ 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse-slow"></div>
-      </div>
-
+    <div className="relative min-h-screen overflow-hidden bg-[#060A12] text-[#E7EDF7] font-[Inter,ui-sans-serif,system-ui]">
+      {/* ---- scoped design system (palette / motion) ---- */}
+      <style>{`
+        @keyframes dial-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes dial-rotate-rev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        @keyframes orbit-a { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes orbit-b { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        @keyframes scanline { 0% { transform: translateY(-100%); opacity: 0; } 10% { opacity: .7; } 90% { opacity: .7; } 100% { transform: translateY(100%); opacity: 0; } }
+        @keyframes wave-hand { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(14deg); } 75% { transform: rotate(-8deg); } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes draw-lock { to { stroke-dashoffset: 0; } }
+        @keyframes pop-check { 0% { opacity: 0; transform: scale(0.5); } 60% { opacity: 1; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes core-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(61,139,255,0.35); } 50% { box-shadow: 0 0 0 14px rgba(61,139,255,0); } }
+ 
+        .vault-dial-slow { animation: dial-rotate 60s linear infinite; }
+        .vault-dial-slow-rev { animation: dial-rotate-rev 90s linear infinite; }
+        .orbit-a { animation: orbit-a 9s linear infinite; }
+        .orbit-b { animation: orbit-b 13s linear infinite; }
+        .wave-hand { animation: wave-hand 2.2s ease-in-out infinite; transform-origin: 70% 70%; display: inline-block; }
+        .fade-in-up { animation: fade-in-up .7s ease-out both; }
+        .core-pulse { animation: core-pulse 2.8s ease-in-out infinite; }
+        .lock-path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-lock 1.1s ease-out .3s forwards; }
+        .lock-check { opacity: 0; animation: pop-check .5s ease-out 1.3s forwards; }
+ 
+        @media (prefers-reduced-motion: reduce) {
+          .vault-dial-slow, .vault-dial-slow-rev, .orbit-a, .orbit-b, .wave-hand, .fade-in-up, .core-pulse, .lock-path, .lock-check { animation: none; }
+          .lock-path { stroke-dashoffset: 0; }
+          .lock-check { opacity: 1; }
+        }
+      `}</style>
+ 
+      {/* faint structural grid — restrained, no blobs */}
       <div
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, #6366f1 1px, transparent 0)`,
-          backgroundSize: "40px 40px",
+          backgroundImage:
+            "linear-gradient(rgba(61,139,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(61,139,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
         }}
       ></div>
-
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-16 h-16 border border-blue-500/10 rounded-lg rotate-12 animate-float-slow"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 border border-purple-500/10 rounded-full animate-float animation-delay-1000"></div>
-        <div className="absolute top-40 right-20 w-12 h-12 border border-indigo-500/10 rounded-full animate-spin-slow"></div>
-        <div className="absolute bottom-40 left-20 w-20 h-20 border border-pink-500/10 rounded-lg -rotate-12 animate-float animation-delay-2000"></div>
-        <div className="absolute top-1/3 right-1/4 w-32 h-32 border border-yellow-500/10 rounded-full animate-pulse-slow"></div>
-      </div>
-
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-          backgroundSize: "50px 50px",
-        }}
-      ></div>
-
-      <div className="absolute top-0 left-0 right-0 z-20">
-        <div className="flex justify-between items-center p-4 sm:p-6 sm:px-24">
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-            <img
-              onClick={() => navigate("/")}
-              src={assets.logo}
-              alt="logo"
-              className="w-28 sm:w-32 relative z-10 transform transition-all duration-300 group-hover:scale-105 cursor-pointer"
-            />
-          </div>
-
-          {isLoggedin ? (
-            <div className="relative group/profile" ref={menuRef}>
-              <div
-                onClick={() => setShowMenu((prev) => !prev)}
-                className="relative cursor-pointer"
-              >
-                <div className={newLocal}></div>
-                <div className="relative w-12 h-12 object-contain bg-gradient-to-br from-blue-500 to-purple-600 rounded-full text-white flex items-center justify-center font-semibold text-xl shadow-lg transform transition-all duration-300 group-hover/profile:scale-110 group-hover/profile:shadow-xl border-2 border-white/50">
-                  {userData?.profilePic !== "" ? (
+ 
+      {/* single cool glow, one place, one accent */}
+      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[640px] h-[640px] rounded-full bg-[#3D8BFF]/10 blur-[120px] pointer-events-none"></div>
+ 
+      {/* ============ NAV ============ */}
+      <header className="relative z-20 flex items-center justify-between px-6 sm:px-16 py-5 border-b border-white/[0.06]">
+        <div
+          onClick={() => navigate("/")}
+          className="flex items-center gap-3 cursor-pointer group"
+        >
+          <img
+            src={assets.logo}
+            alt="logo"
+            className="w-28 sm:w-32 transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        </div>
+ 
+        {isLoggedin ? (
+          <div className="relative group/profile" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu((prev) => !prev)}
+              className="relative flex items-center gap-3 cursor-pointer"
+            >
+              <div className="relative">
+                <div className={avatarGlow}></div>
+                <div className="relative w-11 h-11 rounded-full bg-[#0E1626] border border-[#3D8BFF]/50 text-[#5EA8FF] flex items-center justify-center font-semibold text-lg overflow-hidden">
+                  {userData?.profilePic ? (
                     <img
-                      src={userData?.profilePic}
+                      src={userData.profilePic}
                       alt=""
-                      className="rounded-full object-contain"
+                      className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
-                    userData.name[0].toUpperCase()
+                    initial
                   )}
-                  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
                 </div>
+                <span
+                  className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#060A12] ${
+                    userData?.isVerified ? "bg-[#22D3EE]" : "bg-[#F5A65B]"
+                  }`}
+                ></span>
               </div>
-
-              <div
-                className={`absolute top-full right-0 z-50 pt-3 transition-all duration-300 transform origin-top-right
-    ${showMenu ? "block opacity-100 scale-100" : "hidden opacity-0 scale-95"}`}
+            </button>
+ 
+            {/* access-card style dropdown */}
+            <div
+              className={`absolute top-full right-0 z-50 pt-3 origin-top-right transition-all duration-200 ${
+                showMenu
+                  ? "opacity-100 scale-100 pointer-events-auto"
+                  : "opacity-0 scale-95 pointer-events-none"
+              }`}
+            >
+              <div className="w-[260px] rounded-lg bg-[#0B1220] border border-white/10 shadow-2xl shadow-black/50 overflow-hidden">
+                <div className="h-1.5 bg-gradient-to-r from-[#2563EB] via-[#3D8BFF] to-[#22D3EE]"></div>
+ 
+                <div className="px-4 py-4 border-b border-white/[0.06]">
+                  <p className="text-[10px] tracking-[0.2em] text-[#7C8AA3] uppercase mb-1">
+                    Access Card
+                  </p>
+                  <p className="text-sm font-semibold text-[#E7EDF7]">
+                    {userData?.name || "User"}
+                  </p>
+                  <p className="text-xs text-[#7C8AA3] font-mono truncate mt-0.5">
+                    {userData?.email || "user@example.com"}
+                  </p>
+                  <span
+                    className={`inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                      userData?.isVerified
+                        ? "text-[#22D3EE] border-[#22D3EE]/40 bg-[#22D3EE]/10"
+                        : "text-[#F5A65B] border-[#F5A65B]/40 bg-[#F5A65B]/10"
+                    }`}
+                  >
+                    {userData?.isVerified ? "VERIFIED" : "UNVERIFIED"}
+                  </span>
+                </div>
+ 
+                <ul className="py-1.5">
+                  {userData && !userData.isVerified && (
+                    <li>
+                      <button
+                        onClick={handleVerifyClick}
+                        className="w-full px-4 py-2.5 text-sm text-left text-[#E7EDF7] hover:bg-white/[0.04] transition-colors flex items-center gap-3"
+                      >
+                        <MailCheck className="w-4 h-4 text-[#3D8BFF]" strokeWidth={2} />
+                        <span className="flex-1">Verify Email</span>
+                        <span className="text-[10px] font-mono text-[#3D8BFF]">REQUIRED</span>
+                      </button>
+                    </li>
+                  )}
+ 
+                  <li>
+                    <button
+                      onClick={() => navigate("/profile")}
+                      className="w-full px-4 py-2.5 text-sm text-left text-[#E7EDF7] hover:bg-white/[0.04] transition-colors flex items-center gap-3"
+                    >
+                      <User className="w-4 h-4 text-[#7C8AA3]" strokeWidth={2} />
+                      <span className="flex-1">My Profile</span>
+                    </button>
+                  </li>
+ 
+                  <li>
+                    <button
+                      onClick={() => navigate("/settings")}
+                      className="w-full px-4 py-2.5 text-sm text-left text-[#E7EDF7] hover:bg-white/[0.04] transition-colors flex items-center gap-3"
+                    >
+                      <Settings className="w-4 h-4 text-[#7C8AA3]" strokeWidth={2} />
+                      <span className="flex-1">Settings</span>
+                    </button>
+                  </li>
+ 
+                  <li className="my-1.5 border-t border-white/[0.06]"></li>
+ 
+                  <li>
+                    <button
+                      onClick={() => {
+                        logout();
+                        navigate("/login", { state: { state: "Login" } });
+                      }}
+                      className="w-full px-4 py-2.5 text-sm text-left text-[#E3897A] hover:bg-[#E3897A]/[0.08] transition-colors flex items-center gap-3"
+                    >
+                      <LogOut className="w-4 h-4" strokeWidth={2} />
+                      <span className="flex-1">Logout</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate("/login")}
+            className="group flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#3D8BFF]/40 text-[#E7EDF7] text-sm font-medium hover:bg-[#3D8BFF]/10 hover:border-[#3D8BFF] transition-all duration-300"
+          >
+            Login
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2} />
+          </button>
+        )}
+      </header>
+ 
+      {/* ============ HERO ============ */}
+      <main className="relative z-10 flex flex-col items-center justify-center px-4 pt-20 pb-16 min-h-[calc(100vh-90px)]">
+        <div className="max-w-3xl mx-auto text-center fade-in-up">
+          {/* signature element: authentication core — dial + self-drawing lock + orbiting tokens */}
+          <div className="relative w-40 h-40 sm:w-52 sm:h-52 mx-auto mb-10">
+            <div className="absolute inset-0 rounded-full border border-[#3D8BFF]/20 vault-dial-slow">
+              {[...Array(12)].map((_, i) => (
+                <span
+                  key={i}
+                  className="absolute left-1/2 top-0 w-px h-3 bg-[#3D8BFF]/40"
+                  style={{ transform: `rotate(${i * 30}deg) translateX(-0.5px)`, transformOrigin: "0 104px" }}
+                ></span>
+              ))}
+            </div>
+            <div className="absolute inset-4 rounded-full border border-[#22D3EE]/15 vault-dial-slow-rev"></div>
+ 
+            {/* orbiting session tokens */}
+            <div className="absolute inset-6 orbit-a pointer-events-none">
+              <span className="absolute left-1/2 top-0 w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3D8BFF] shadow-[0_0_8px_2px_rgba(61,139,255,0.6)]"></span>
+            </div>
+            <div className="absolute inset-10 orbit-b pointer-events-none">
+              <span className="absolute left-1/2 bottom-0 w-1.5 h-1.5 translate-x-1/2 translate-y-1/2 rounded-full bg-[#22D3EE] shadow-[0_0_6px_2px_rgba(34,211,238,0.6)]"></span>
+            </div>
+ 
+            <div className="absolute inset-8 rounded-full bg-[#0B1220] border border-white/[0.06] flex items-center justify-center overflow-hidden core-pulse">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-14 sm:w-20"
+                fill="none"
               >
-                <div className="bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 overflow-hidden min-w-[240px]">
-                  <div className="px-4 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-slate-700/50">
-                    <p className="text-sm font-semibold text-white">
-                      {userData?.name || "User"}
-                    </p>
-                    <p className="text-xs text-slate-400 truncate">
-                      {userData?.email || "user@example.com"}
-                    </p>
-                  </div>
-
-                  <ul className="py-2">
-                    {userData && !userData.isVerified && (
-                      <li>
-                        <button
-                          onClick={handleVerifyClick}
-                          className="w-full cursor-pointer px-4 py-2.5 text-sm text-left text-slate-200 hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 hover:text-white transition-all duration-200 flex items-center gap-3 group/item"
-                        >
-                          <div className="relative">
-                            <svg
-                              className="w-4 h-4 text-yellow-500"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full animate-ping"></span>
-                          </div>
-                          <span className="flex-1">Verify Email</span>
-                          <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full border border-yellow-500/30">
-                            Required
-                          </span>
-                        </button>
-                      </li>
-                    )}
-
-                    <li>
-                      <button
-                        onClick={() => navigate("/profile")}
-                        className="w-full px-4 py-2.5 text-sm text-left text-slate-200 hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 hover:text-white transition-all duration-200 flex items-center gap-3 group/item"
-                      >
-                        <svg
-                          className="w-4 h-4 text-blue-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span className="flex-1">My Profile</span>
-                        <svg
-                          className="w-4 h-4 text-slate-500 transform group-hover/item:translate-x-1 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
-                    </li>
-
-                    <li>
-                      <button
-                        onClick={() => navigate("/settings")}
-                        className="w-full px-4 py-2.5 text-sm text-left text-slate-200 hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 hover:text-white transition-all duration-200 flex items-center gap-3 group/item"
-                      >
-                        <svg
-                          className="w-4 h-4 text-purple-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span className="flex-1">Settings</span>
-                      </button>
-                    </li>
-
-                    <li className="my-2 border-t border-slate-700/50"></li>
-
-                    <li>
-                      <button
-                        onClick={() => {
-                          logout();
-                          navigate("/login", {
-                            state: {
-                              state: "Login",
-                            },
-                          });
-                        }}
-                        className="w-full px-4 py-2.5 text-sm text-left text-red-400 hover:bg-gradient-to-r hover:from-red-600/20 hover:to-orange-600/20 hover:text-red-300 transition-all duration-200 flex items-center gap-3 group/item"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                          />
-                        </svg>
-                        <span className="flex-1">Logout</span>
-                        <svg
-                          className="w-4 h-4 transform group-hover/item:translate-x-1 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                          />
-                        </svg>
-                      </button>
-                    </li>
-                  </ul>
-
-                  <div className="px-4 py-2 bg-slate-900/50 border-t border-slate-700/50">
-                    <p className="text-xs text-slate-500 text-center flex items-center justify-center gap-1">
-                      <svg
-                        className="w-3 h-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Secured by Auth
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div>
-                <button
-                  onClick={() => navigate("/login")}
-                  className="relative group overflow-hidden rounded-full"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  <div className="relative flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white group-hover:bg-transparent px-6 py-2.5 rounded-full border border-white/20 hover:border-white transition-all duration-300 shadow-md hover:shadow-xl transform hover:scale-105">
-                    <span className="text-sm font-medium">Login</span>
-
-                    <img
-                      src={assets.arrow_icon}
-                      alt=""
-                      className="size-4 filter brightness-0 invert transform group-hover:translate-x-1 transition-transform"
-                    />
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pt-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="relative mb-8 group">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
-            <div className="relative transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-              <img
-                src={assets.aibot}
-                alt="AI Assistant"
-                className="w-32 sm:w-40 mx-auto drop-shadow-2xl relative z-10 animate-float"
-              />
-              <div className="absolute inset-0 rounded-full border-2 border-blue-500/20 animate-ping"></div>
-              <div className="absolute inset-0 rounded-full border-2 border-purple-500/20 animate-ping animation-delay-500"></div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Hey{" "}
-              {userData ? userData.name.trim().split(/\s+/)[0] : "Developer"}
-              !{" "}
-            </h1>
-            <div className="relative">
-              <img
-                src={assets.hand_wave}
-                alt="hand_wave"
-                className="w-8 sm:w-10 aspect-square animate-wave origin-bottom"
-              />
-              <div className="absolute inset-0 animate-ping opacity-20">
-                <img
-                  src={assets.hand_wave}
-                  alt=""
-                  className="w-8 sm:w-10 aspect-square opacity-0"
+                <rect
+                  x="5.5" y="10.5" width="13" height="9.5" rx="1.8"
+                  stroke="#5EA8FF" strokeWidth="1.4" pathLength="1"
+                  className="lock-path"
                 />
-              </div>
+                <path
+                  d="M8 10.5V7.2a4 4 0 0 1 8 0V10.5"
+                  stroke="#5EA8FF" strokeWidth="1.4" strokeLinecap="round"
+                  pathLength="1" className="lock-path"
+                  style={{ animationDelay: ".55s" }}
+                />
+                <path
+                  d="M9.3 15.4 L11.4 17.5 L15 13.4"
+                  stroke="#22D3EE" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+                  className="lock-check"
+                />
+              </svg>
+              <span
+                className="absolute left-0 right-0 h-8 bg-gradient-to-b from-transparent via-[#3D8BFF]/15 to-transparent"
+                style={{ animation: "scanline 3.5s ease-in-out infinite" }}
+              ></span>
             </div>
           </div>
-
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Welcome To
-            </span>
+ 
+          <p className="text-[11px] sm:text-xs tracking-[0.35em] text-[#7C8AA3] uppercase mb-3 font-mono">
+            Session Secure
+          </p>
+ 
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h1 className="text-xl sm:text-2xl font-medium text-[#7C8AA3]">
+              Hey {firstName}
+            </h1>
+            <Hand
+              className="w-6 h-6 sm:w-7 sm:h-7 text-[#F5A65B] wave-hand"
+              strokeWidth={2}
+              fill="#F5A65B"
+              fillOpacity={0.15}
+            />
+          </div>
+ 
+          <h2 className="font-serif text-5xl sm:text-7xl lg:text-8xl font-semibold tracking-tight leading-[0.95] mb-6">
+            <span className="text-[#E7EDF7]">Welcome to</span>
             <br />
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-              Auth
+            <span className="bg-gradient-to-r from-[#3D8BFF] to-[#22D3EE] bg-clip-text text-transparent">
+              Auth 2.0
             </span>
           </h2>
-
-          <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Let's start with quick product tour and we will have you up and
-            running in no time!
+ 
+          <p className="text-base sm:text-lg text-[#7C8AA3] max-w-xl mx-auto mb-10 leading-relaxed">
+            A quick tour of your account, then you're through the door —
+            fully authenticated and ready to go.
           </p>
-
-          <div className="relative group inline-block">
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-
+ 
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
             <button
               onClick={() => navigate("/login")}
-              className="relative px-10 py-4 bg-white rounded-full text-lg font-semibold text-slate-800 shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 border border-slate-200 overflow-hidden group"
+              className="group relative px-9 py-3.5 rounded-full bg-gradient-to-r from-[#2563EB] to-[#3D8BFF] text-[#F7FAFF] text-base font-semibold shadow-lg shadow-[#3D8BFF]/20 hover:shadow-xl hover:shadow-[#3D8BFF]/30 transform transition-all duration-300 hover:-translate-y-0.5"
             >
-              <span className="absolute inset-0 bg-linear-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-
-              <span className="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors duration-300">
-                Get Started!
-                <img src={assets.arrow_icon} alt="" />
+              <span className="flex items-center gap-2">
+                Get Started
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2} />
               </span>
-
-              <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
             </button>
           </div>
-
-          <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mt-16 text-sm text-slate-500">
+ 
+          {/* trust chips — specific, not generic */}
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs font-mono text-[#7C8AA3]">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Secure Authentication</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3D8BFF]"></span>
+              OAuth 2.0 compliant
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span>Real-time Updates</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#22D3EE]"></span>
+              Rotating refresh tokens
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-              <span>24/7 Support</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5B8DEF]"></span>
+              Round-the-clock monitoring
             </div>
-          </div>
-
-          <div className="mt-16 inline-flex items-center gap-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700/50">
-            <img src={assets.lock_icon} alt="" />
-            <span className="text-xs text-slate-400">
-              Secured with 256-bit encryption
-            </span>
           </div>
         </div>
-
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 hidden sm:block">
-          <div className="w-6 h-10 border-2 border-slate-700 rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-linear-to-b from-blue-500 to-purple-500 rounded-full mt-2 animate-scroll"></div>
+ 
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 opacity-60">
+          <div className="w-5 h-8 border border-[#3D8BFF]/30 rounded-full flex justify-center pt-1.5">
+            <div className="w-1 h-1.5 bg-[#3D8BFF] rounded-full"></div>
           </div>
         </div>
-      </div>
-
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white/10 rounded-full animate-float-random"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="absolute top-0 left-0 w-32 h-32 bg-linear-to-br from-blue-500/10 to-transparent"></div>
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-500/10 to-transparent"></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-pink-500/10 to-transparent"></div>
-      <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-indigo-500/10 to-transparent"></div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
+      </main>
+ 
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#060A12] to-transparent pointer-events-none"></div>
     </div>
   );
 };
-
+ 
 export default Home;
