@@ -7,7 +7,7 @@ import { assets } from "./assets/assets";
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
-import ResetPassword from './pages/ResetPassword'
+import ResetPassword from "./pages/ResetPassword";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -64,139 +64,141 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-              backgroundSize: "40px 40px",
-            }}
-          ></div>
-        </div>
-
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-orb animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
-        </div>
-
-        {/* Floating shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-20 h-20 border-2 border-blue-500/20 rounded-lg rotate-45 animate-float-slow"></div>
-          <div className="absolute bottom-20 right-10 w-32 h-32 border-2 border-purple-500/20 rounded-full animate-float animation-delay-1000"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 border-2 border-indigo-500/20 rounded-full animate-spin-slow"></div>
-        </div>
-
+      <div className="relative min-h-screen overflow-hidden bg-[#060A12] text-[#E7EDF7]">
+        {" "}
+        {/* Grid background */}{" "}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(61,139,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(61,139,255,0.5) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+          }}
+        ></div>{" "}
+        {/* Blue glow */}{" "}
+        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[640px] h-[640px] rounded-full bg-[#3D8BFF]/10 blur-[120px] pointer-events-none"></div>{" "}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+          {" "}
+          {/* Logo */}{" "}
           <div className="mb-8 group">
+            {" "}
             <div className="relative">
-              <div className="absolute inset-0 bg-linear-to-r from-blue-200 to-purple-200 rounded-2xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-              <div className="relative w-28 h-28  bg-transparent p-4 rounded-2xl shadow-2xl flex items-center justify-center border backdrop-blur-sm transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                <img src={assets.logo} alt="" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 max-w-md w-full border border-slate-700/50 transform transition-all duration-500 hover:shadow-purple-500/20 hover:shadow-2xl">
+              {" "}
+              <div className="absolute inset-0 bg-[#3D8BFF]/20 rounded-2xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>{" "}
+              <div className="relative w-28 h-28 bg-transparent p-4 rounded-2xl shadow-2xl flex items-center justify-center border border-white/[0.06] backdrop-blur-sm transform transition-all duration-500 group-hover:scale-110">
+                {" "}
+                <img src={assets.logo} alt="Logo" />{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
+          {/* Loading Card */}{" "}
+          <div className="bg-[#0B1220]/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 max-w-md w-full border border-white/[0.06]">
+            {" "}
             <div className="text-center mb-6">
+              {" "}
               <h1 className="text-4xl font-bold mb-2">
-                <span className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Auth
-                </span>
-              </h1>
-              <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-            </div>
-
-            <h2 className="text-xl font-semibold text-white/90 text-center mb-4">
+                {" "}
+                <span className="bg-gradient-to-r from-[#3D8BFF] to-[#22D3EE] bg-clip-text text-transparent">
+                  {" "}
+                  Auth 2.0{" "}
+                </span>{" "}
+              </h1>{" "}
+              <div className="h-1 w-20 bg-gradient-to-r from-[#2563EB] to-[#22D3EE] mx-auto rounded-full"></div>{" "}
+            </div>{" "}
+            <h2 className="text-xl font-semibold text-[#E7EDF7] text-center mb-4">
+              {" "}
               {progress < 100
                 ? "Secure Authentication System"
-                : "Welcome Back!"}
-            </h2>
-
-            <p className="text-slate-400 text-center mb-8 text-sm">
-              {progress < 30 && "Initializing security protocols..."}
+                : "Welcome Back!"}{" "}
+            </h2>{" "}
+            <p className="text-[#7C8AA3] text-center mb-8 text-sm">
+              {" "}
+              {progress < 30 && "Initializing security protocols..."}{" "}
               {progress >= 30 &&
                 progress < 60 &&
-                "Establishing secure connection..."}
-              {progress >= 60 && progress < 90 && "Verifying credentials..."}
-              {progress >= 90 && "Almost ready..."}
-            </p>
-
-            <div className="w-full bg-slate-700/50 rounded-full h-2 mb-8 overflow-hidden">
+                "Establishing secure connection..."}{" "}
+              {progress >= 60 && progress < 90 && "Verifying credentials..."}{" "}
+              {progress >= 90 && "Almost ready..."}{" "}
+            </p>{" "}
+            {/* Progress Bar */}{" "}
+            <div className="w-full bg-[#111827] rounded-full h-2 mb-8 overflow-hidden">
+              {" "}
               <div
-                className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500 ease-out relative"
+                className="bg-gradient-to-r from-[#2563EB] to-[#22D3EE] h-2 rounded-full transition-all duration-500 ease-out relative"
                 style={{ width: `${progress}%` }}
               >
-                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-              </div>
-            </div>
-
+                {" "}
+                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>{" "}
+              </div>{" "}
+            </div>{" "}
+            {/* Status Cards */}{" "}
             <div className="grid grid-cols-3 gap-3 mb-8">
-              <div className="bg-slate-700/30 rounded-lg p-3 text-center">
+              {" "}
+              <div className="bg-white/[0.03] rounded-lg p-3 text-center border border-white/[0.05]">
+                {" "}
                 <div className="flex justify-center mb-1">
+                  {" "}
                   <div
-                    className={`w-2 h-2 rounded-full ${progress > 30 ? "bg-green-500 animate-pulse" : "bg-slate-500"}`}
-                  ></div>
-                </div>
-                <span className="text-xs text-slate-400">Encryption</span>
-              </div>
-              <div className="bg-slate-700/30 rounded-lg p-3 text-center">
+                    className={`w-2 h-2 rounded-full ${progress > 30 ? "bg-[#22D3EE] animate-pulse" : "bg-[#475569]"}`}
+                  ></div>{" "}
+                </div>{" "}
+                <span className="text-xs text-[#7C8AA3]">
+                  {" "}
+                  Encryption{" "}
+                </span>{" "}
+              </div>{" "}
+              <div className="bg-white/[0.03] rounded-lg p-3 text-center border border-white/[0.05]">
+                {" "}
                 <div className="flex justify-center mb-1">
+                  {" "}
                   <div
-                    className={`w-2 h-2 rounded-full ${progress > 60 ? "bg-green-500 animate-pulse" : "bg-slate-500"}`}
-                  ></div>
-                </div>
-                <span className="text-xs text-slate-400">Firewall</span>
-              </div>
-              <div className="bg-slate-700/30 rounded-lg p-3 text-center">
+                    className={`w-2 h-2 rounded-full ${progress > 60 ? "bg-[#22D3EE] animate-pulse" : "bg-[#475569]"}`}
+                  ></div>{" "}
+                </div>{" "}
+                <span className="text-xs text-[#7C8AA3]"> Firewall </span>{" "}
+              </div>{" "}
+              <div className="bg-white/[0.03] rounded-lg p-3 text-center border border-white/[0.05]">
+                {" "}
                 <div className="flex justify-center mb-1">
+                  {" "}
                   <div
-                    className={`w-2 h-2 rounded-full ${progress > 90 ? "bg-green-500 animate-pulse" : "bg-slate-500"}`}
-                  ></div>
-                </div>
-                <span className="text-xs text-slate-400">2FA</span>
-              </div>
-            </div>
-
+                    className={`w-2 h-2 rounded-full ${progress > 90 ? "bg-[#22D3EE] animate-pulse" : "bg-[#475569]"}`}
+                  ></div>{" "}
+                </div>{" "}
+                <span className="text-xs text-[#7C8AA3]"> 2FA </span>{" "}
+              </div>{" "}
+            </div>{" "}
+            {/* Loading Dots */}{" "}
             <div className="flex justify-center items-center space-x-3 mb-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse [animation-delay:-0.3s]"></div>
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse [animation-delay:-0.15s]"></div>
-              <div className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
-            </div>
-
+              {" "}
+              <div className="w-2 h-2 bg-[#3D8BFF] rounded-full animate-pulse [animation-delay:-0.3s]"></div>{" "}
+              <div className="w-2 h-2 bg-[#4F8FFF] rounded-full animate-pulse [animation-delay:-0.15s]"></div>{" "}
+              <div className="w-2 h-2 bg-[#22D3EE] rounded-full animate-pulse"></div>{" "}
+            </div>{" "}
             {attempts > 0 && (
-              <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                <p className="text-yellow-400 text-xs text-center flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Connection attempt {attempts + 1}/5
-                </p>
+              <div className="mt-4 p-3 bg-[#3D8BFF]/10 border border-[#3D8BFF]/20 rounded-lg">
+                {" "}
+                <p className="text-[#5EA8FF] text-xs text-center">
+                  {" "}
+                  Connection attempt {attempts + 1}/5{" "}
+                </p>{" "}
               </div>
-            )}
-          </div>
-
-          {/* Security badge */}
-          <div className="mt-8 flex items-center space-x-2 text-slate-500 text-sm">
+            )}{" "}
+          </div>{" "}
+          {/* Security Badge */}{" "}
+          <div className="mt-8 flex items-center space-x-2 text-[#7C8AA3] text-sm">
+            {" "}
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              {" "}
               <path
                 fillRule="evenodd"
                 d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                 clipRule="evenodd"
-              />
-            </svg>
-            <span>Secured with 256-bit encryption</span>
-          </div>
-        </div>
+              />{" "}
+            </svg>{" "}
+            <span>Secured with 256-bit encryption</span>{" "}
+          </div>{" "}
+        </div>{" "}
       </div>
     );
   }
@@ -209,20 +211,23 @@ function App() {
         hideProgressBar={false}
         newestOnTop
         closeOnClick
-        rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
         theme="dark"
-        toastClassName="bg-slate-800 text-white border border-slate-700"
-        progressClassName="bg-gradient-to-r from-blue-500 to-purple-500"
+        toastClassName={() =>
+          "bg-[#0B1220]/95 backdrop-blur-xl flex !px-4 !py-2 border border-white/[0.08] rounded-2xl text-[#E7EDF7] shadow-2xl shadow-black/40"
+        }
+        bodyClassName={() => "!m-0 !p-4 text-sm font-medium text-[#E7EDF7]"}
+        progressClassName="bg-gradient-to-r from-[#2563EB] via-[#3D8BFF] to-[#22D3EE]"
       />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/email-verify" element={<VerifyEmail />} />
-        <Route path="/reset-password" element={<ResetPassword/>} />      </Routes>
+        <Route path="/reset-password" element={<ResetPassword />} />{" "}
+      </Routes>
     </div>
   );
 }

@@ -17,16 +17,25 @@ const Home = () => {
   const navigate = useNavigate();
   const { isLoggedin, userData, logout, backendUrl } = useContext(Context);
   const [showMenu, setShowMenu] = useState(false);
+  const [loading, setLoading] = useState(false);
   const menuRef = useRef(null);
  
   const handleVerifyClick = async (e) => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
-    await axios.post(backendUrl + "/auth/send-verify-otp", {
+    setLoading(true);
+    const data=await axios.post(backendUrl + "/auth/send-verify-otp", {
       withCredentials: true,
     });
-    toast.success("Verification OTP sent to email! 🎉");
-    navigate("/email-verify");
+    console.log(data)
+    if(!data.data.success){
+      toast.error("Failed to send verification OTP");
+      setLoading(false);
+    } else {
+      toast.success("Verification OTP sent to email! 🎉");
+      setLoading(false);
+      navigate("/email-verify");
+    }
   };
  
   useEffect(() => {
@@ -166,7 +175,8 @@ const Home = () => {
                     <li>
                       <button
                         onClick={handleVerifyClick}
-                        className="w-full px-4 py-2.5 text-sm text-left text-[#E7EDF7] hover:bg-white/[0.04] transition-colors flex items-center gap-3"
+                        disabled={loading}
+                        className={`${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.04] cursor-pointer"} w-full px-4 py-2.5 text-sm text-left text-[#E7EDF7] transition-colors flex items-center gap-3`}
                       >
                         <MailCheck className="w-4 h-4 text-[#3D8BFF]" strokeWidth={2} />
                         <span className="flex-1">Verify Email</span>
