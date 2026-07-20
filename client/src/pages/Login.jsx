@@ -23,7 +23,6 @@ import {
 
 const appid = import.meta.env.VITE_FB_APP_ID;
 const Login = () => {
-  const googleContainerRef = useRef(null);
   const location = useLocation();
   const [state, setState] = useState(location.state || "Sign Up");
   const [name, setName] = useState("");
@@ -108,37 +107,40 @@ const Login = () => {
     }
   }
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      setLoading(true);
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
 
-      const appToken = credentialResponse?.credential;
+        const appToken = tokenResponse?.access_token;
 
-      if (!appToken) {
-        throw new Error("Missing credential token");
+        if (!appToken) {
+          throw new Error("Missing access token");
+        }
+
+        const { data } = await axios.post(
+          `${backendUrl}/auth/google`,
+          { appToken },
+          { withCredentials: true },
+        );
+
+        if (data.success) {
+          toast.success(data.message);
+          setIsLoggedin(true);
+          await getUserData();
+          navigate("/");
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error(error.response?.data?.message || "Google login failed");
+      } finally {
+        setLoading(false);
       }
-
-      const { data } = await axios.post(
-        `${backendUrl}/auth/google`,
-        { appToken },
-        { withCredentials: true },
-      );
-
-      if (data.success) {
-        toast.success(data.message);
-        setIsLoggedin(true);
-        await getUserData();
-        navigate("/");
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Google login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onError: () => toast.error("Google login failed"),
+  });
 
   const handlefbSuccess = async (response) => {
     try {
@@ -327,26 +329,11 @@ const Login = () => {
           </div>
 
           <div className="w-full flex flex-col sm:flex-row gap-3 justify-center items-center">
-            {/* Hidden Google Button */}
-            <div
-              ref={googleContainerRef}
-              className="fixed -left-[9999px] -top-[9999px]"
-            >
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => toast.error("Google login failed")}
-              />
-            </div>
-
             {/* Custom Google Button */}
             <button
               type="button"
               disabled={loading}
-              onClick={() =>
-                googleContainerRef.current
-                  ?.querySelector('div[role="button"]')
-                  ?.click()
-              }
+              onClick={() => googleLogin()}
               className="
       group flex items-center justify-center gap-3
       w-full sm:w-[260px]
@@ -369,7 +356,6 @@ const Login = () => {
                 alt="Google"
                 className="w-7 h-7"
               />
-
               <span className="font-medium">
                 {loading ? "Please wait..." : "Continue with Google"}
               </span>

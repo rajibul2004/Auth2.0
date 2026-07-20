@@ -48,6 +48,13 @@ function App() {
       } catch (error) {
         clearInterval(interval);
 
+        if (error.response && error.response.status === 401) {
+          // User is just not logged in. Stop loading immediately without retrying.
+          setProgress(100);
+          setTimeout(() => setLoading(false), 500);
+          return;
+        }
+
         console.log("Retrying...", attempts + 1);
 
         setAttempts((prev) => prev + 1);

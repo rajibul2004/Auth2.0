@@ -83,6 +83,14 @@ const login = async (req, res) => {
             })
         }
 
+        // Security check: Prevent manual login if this is an OAuth account
+        if (existingUser.provider !== "local" || existingUser.password === "google_auth" || existingUser.password === "facebook_oauth") {
+            return res.status(403).json({
+                success: false,
+                message: `This email is associated with a ${existingUser.provider || 'social'} account. Please log in using that method.`
+            });
+        }
+
         const isMatch = await bcrypt.compare(password, existingUser.password)
         if (!isMatch) {
             return res.status(401).json({
@@ -250,6 +258,15 @@ const sendResetOtp = async (req, res) => {
                 message: "User not found!"
             })
         }
+
+        // Security check: Prevent password reset for OAuth accounts
+        if (user.provider !== "local") {
+            return res.status(403).json({
+                success: false,
+                message: `This email is managed by ${user.provider}. Password reset is not available.`
+            });
+        }
+
         const otp = String(Math.floor(100000 + Math.random() * 900000))
 
         const mailOption = {
@@ -366,7 +383,8 @@ const googleAuth = async (req, res) => {
             return res.status(400).json({ error: "Token missing" });
         }
         const googleRes = await fetch(
-            `https://oauth2.googleapis.com/tokeninfo?id_token=${appToken}`
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            { headers: { Authorization: `Bearer ${appToken}` } }
         );
 
         const googleUser = await googleRes.json();

@@ -4,13 +4,13 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import path from 'path'
 import { fileURLToPath } from 'url';
-const app = express();
-app.set('trust proxy', 1);
+import connectDB from './config/mongodb.js'
+import authRotes from './routes/authRoutes.js'
+
 dotenv.config()
 
-import connectDB from './config/mongodb.js'
-
-import authRotes from './routes/authRoutes.js'
+const app = express();
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 5000;
 const host = process.env.HOST
