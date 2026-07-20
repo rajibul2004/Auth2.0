@@ -24,23 +24,6 @@ const register = async (req, res) => {
             });
         }
 
-        const mailOption = {
-            from: process.env.SENDER_EMAIL,
-            to: email.trim(),
-            subject: "Welcome to Auth",
-            text: `Welcome to auth. Your account has been created with email id: ${email}`
-        }
-        try {
-            await transporter.sendMail(mailOption);
-        }
-        catch (mailErr) {
-            console.error("Email send error:", mailErr);
-            return res.status(500).json({
-                success: false,
-                message: "Registration successful, but failed to send email."
-            });
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new UserModel({ name: name.trim(), email: email.trim(), password: hashedPassword });
         await newUser.save();
@@ -56,6 +39,16 @@ const register = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        const mailOption = {
+            from: process.env.SENDER_EMAIL,
+            to: email.trim(),
+            subject: "Welcome to Auth",
+            text: `Welcome to auth. Your account has been created with email id: ${email}`
+        }
+        transporter.sendMail(mailOption).catch(mailErr => {
+            console.error("Welcome email send error:", mailErr);
         });
 
         return res.status(201).json({
@@ -180,7 +173,7 @@ const verifyOtp = async (req, res) => {
         })
     }
 }
-const verifyEamil = async (req, res) => {
+const verifyEmail = async (req, res) => {
 
     const userId = req.userId || req.body.userId;
     const { otp } = req.body
@@ -201,13 +194,13 @@ const verifyEamil = async (req, res) => {
             })
         }
         if (user.verifyOtp === '' || user.verifyOtp !== otp) {
-            res.status(403).json({
+            return res.status(403).json({
                 success: false,
                 message: "OTP is invalid!"
             })
         }
         if (user.verifyOtpExpAt < Date.now()) {
-            res.json.status(403).json({
+            return res.status(403).json({
                 success: false,
                 message: "OTP Expired"
             })
@@ -417,22 +410,16 @@ const googleAuth = async (req, res) => {
             });
             await newUser.save()
             isNew = true;
+            
             const mailOption = {
                 from: process.env.SENDER_EMAIL,
                 to: googleUser.email,
                 subject: "Welcome to Auth",
                 text: `Welcome to auth. Your account has been created with email id: ${googleUser.email}`
             }
-            try {
-                await transporter.sendMail(mailOption);
-            }
-            catch (mailErr) {
-                console.error("Email send error:", mailErr);
-                return res.status(500).json({
-                    success: false,
-                    message: "Registration successful, but failed to send email."
-                });
-            }
+            transporter.sendMail(mailOption).catch(mailErr => {
+                console.error("Welcome email send error:", mailErr);
+            });
             const token = jsonwebtoken.sign(
                 { id: newUser._id },
                 process.env.JWT_SECRET,
@@ -502,7 +489,7 @@ const facebookAuth = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
         }
-        if(user &&user.password!=="facebook_auth"){
+        if(user && user.password!=="facebook_oauth"){
             return res.status(401).json({
                 success:false,
                 message:"User already exist"
@@ -525,16 +512,9 @@ const facebookAuth = async (req, res) => {
                 subject: "Welcome to Auth",
                 text: `Welcome to auth. Your account has been created with email id: ${fbUser.email}`
             }
-            try {
-                await transporter.sendMail(mailOption);
-            }
-            catch (mailErr) {
-                console.error("Email send error:", mailErr);
-                return res.status(500).json({
-                    success: false,
-                    message: "Registration successful, but failed to send email."
-                });
-            }
+            transporter.sendMail(mailOption).catch(mailErr => {
+                console.error("Welcome email send error:", mailErr);
+            });
             const token = jsonwebtoken.sign(
                 { id: newUser._id },
                 process.env.JWT_SECRET,
@@ -564,4 +544,4 @@ const facebookAuth = async (req, res) => {
     }
 }
 
-export { register, login, logout, verifyOtp, verifyEamil, isAuthenticated, sendResetOtp, resetPassword, getUserData, googleAuth, facebookAuth }
+export { register, login, logout, verifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword, getUserData, googleAuth, facebookAuth }

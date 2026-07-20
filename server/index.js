@@ -3,7 +3,9 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import path from 'path'
+import { fileURLToPath } from 'url';
 const app = express();
+app.set('trust proxy', 1);
 dotenv.config()
 
 import connectDB from './config/mongodb.js'
@@ -34,12 +36,13 @@ app.use('/api/auth',authRotes)
 
 
 
-const dir_name=path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const env=process.env.NODE_ENV
 if(env==="production"){
-    app.use(express.static(path.join(dir_name,'../client/dist')));
+    app.use(express.static(path.join(__dirname,'../client/dist')));
     app.get(/.*/,(req,res)=>{
-        res.sendFile(path.join(dir_name,  "../client/dist/index.html"));
+        res.sendFile(path.join(__dirname,  "../client/dist/index.html"));
     })
 }
 

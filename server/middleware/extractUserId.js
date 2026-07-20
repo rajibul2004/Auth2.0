@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 const userId = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
-        return res.json({
+        return res.status(401).json({
             success: false,
             message: "Not Authorized Login Again"
         })
@@ -14,7 +14,7 @@ const userId = async (req, res, next) => {
             req.userId = tokenDecode.id
         }
         else {
-            return res.json({
+            return res.status(401).json({
                 success: false,
                 message: "Not Authorized Login Again "
             })
@@ -22,7 +22,7 @@ const userId = async (req, res, next) => {
         next()
     }
     catch (err) {
-        res.json({
+        return res.status(401).json({
             success: false,
             message: err.message
         })
