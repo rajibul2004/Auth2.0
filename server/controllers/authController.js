@@ -531,8 +531,8 @@ const facebookAuth = async (req, res) => {
         res.json({
             success: true,
             message: isNew
-                ? 'Google sign up successful'
-                : 'Google login successful',
+                ? 'Facebook sign up successful'
+                : 'Facebook login successful',
             user,
         });
     }

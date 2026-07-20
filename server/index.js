@@ -14,7 +14,6 @@ import authRotes from './routes/authRoutes.js'
 
 const PORT = process.env.PORT || 5000;
 const host = process.env.HOST
-// const allowedOrigin = [process.env.CLIENT_URI,"http://localhost:5173"]
 const allowedOrigin = ["http://localhost:5173"]
 
 app.use(express.json());

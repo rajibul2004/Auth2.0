@@ -133,14 +133,14 @@ const AppContextProvider = (props) => {
 
     if (loading && !authChecked) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
                 <div className="relative">
                     <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
-                    <div className="absolute inset-0 w-16 h-16 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" style={{ animationDuration: '0.8s' }}></div>
+                    <div className="absolute inset-0 w-16 h-16 border-4 border-cyan-400/20 border-t-cyan-400 rounded-full animate-spin" style={{ animationDuration: '0.8s' }}></div>
                     
                     {/* Logo in center (optional) */}
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-pulse"></div>
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-full animate-pulse"></div>
                     </div>
                 </div>
             </div>
