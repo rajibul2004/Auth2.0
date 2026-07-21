@@ -24,17 +24,26 @@ const Home = () => {
     e.preventDefault();
     axios.defaults.withCredentials = true;
     setLoading(true);
-    const data=await axios.post(backendUrl + "/auth/send-verify-otp", {
-      withCredentials: true,
-    });
-    console.log(data)
-    if(!data.data.success){
-      toast.error("Failed to send verification OTP");
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/auth/send-verify-otp",
+        {},
+        { timeout: 10000 } // 10 second timeout
+      );
+      if (data.success) {
+        toast.success("Verification OTP sent to email! 🎉");
+        navigate("/email-verify");
+      } else {
+        toast.error(data.message || "Failed to send verification OTP");
+      }
+    } catch (err) {
+      if (err.code === "ECONNABORTED") {
+        toast.error("Email not sent: Connection timed out. Please try again later.");
+      } else {
+        toast.error(err.response?.data?.message || err.message || "Failed to send verification OTP");
+      }
+    } finally {
       setLoading(false);
-    } else {
-      toast.success("Verification OTP sent to email! 🎉");
-      setLoading(false);
-      navigate("/email-verify");
     }
   };
  

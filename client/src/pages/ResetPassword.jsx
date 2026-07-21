@@ -73,9 +73,11 @@ const ResetPassword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post(backendUrl + "/auth/send-reset-otp", {
-        email,
-      });
+      const { data } = await axios.post(
+        backendUrl + "/auth/send-reset-otp",
+        { email },
+        { timeout: 10000 } // 10 second timeout
+      );
       if (data.success) {
         toast.success(data.message);
         setIsEmailSent(true);
@@ -83,7 +85,11 @@ const ResetPassword = () => {
         toast.error(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || err.message);
+      if (err.code === "ECONNABORTED") {
+        toast.error("Email not sent: Connection timed out. Please try again later.");
+      } else {
+        toast.error(err.response?.data?.message || err.message);
+      }
     } finally {
       setLoading(false);
     }

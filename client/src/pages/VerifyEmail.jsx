@@ -101,7 +101,11 @@ const VerifyEmail = () => {
   async function resendOTP() {
     try {
       setLoading(true);
-      const { data } = await axios.post(backendUrl + "/api/resend-verify-otp");
+      const { data } = await axios.post(
+        backendUrl + "/api/resend-verify-otp",
+        {},
+        { timeout: 10000 } // 10 second timeout
+      );
  
       if (data.success) {
         toast.success("New OTP sent to your email");
@@ -120,7 +124,11 @@ const VerifyEmail = () => {
         toast.error(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || err.message);
+      if (err.code === "ECONNABORTED") {
+        toast.error("Email not sent: Connection timed out. Please try again later.");
+      } else {
+        toast.error(err.response?.data?.message || err.message);
+      }
     } finally {
       setLoading(false);
     }
